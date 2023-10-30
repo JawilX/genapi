@@ -1,18 +1,18 @@
 {
-  "name": "pkg-placeholder",
+  "name": "gen-api",
   "type": "module",
   "version": "0.0.0",
   "packageManager": "pnpm@8.8.0",
-  "description": "_description_",
-  "author": "Anthony Fu <anthonyfu117@hotmail.com>",
+  "description": "auto generate api code from swagger 2",
+  "author": "JawilX <xjh53047@gmail.com>",
   "license": "MIT",
-  "funding": "https://github.com/sponsors/antfu",
-  "homepage": "https://github.com/antfu/pkg-placeholder#readme",
+  "funding": "https://github.com/sponsors/JawilX",
+  "homepage": "https://github.com/JawilX/gen-api#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/antfu/pkg-placeholder.git"
+    "url": "git+https://github.com/JawilX/gen-api.git"
   },
-  "bugs": "https://github.com/antfu/pkg-placeholder/issues",
+  "bugs": "https://github.com/JawilX/gen-api/issues",
   "keywords": [],
   "sideEffects": false,
   "exports": {
