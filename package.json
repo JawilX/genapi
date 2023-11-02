@@ -1,7 +1,7 @@
 {
-  "name": "gen-api",
+  "name": "@jawilx/gen-api",
   "type": "module",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "packageManager": "pnpm@8.8.0",
   "description": "auto generate api code from swagger 2",
   "author": "JawilX <xjh53047@gmail.com>",
@@ -33,25 +33,40 @@
       ]
     }
   },
+  "bin": {
+    "gen-api": "bin/gen-api.mjs"
+  },
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "unbuild",
     "dev": "unbuild --stub",
     "lint": "eslint .",
     "prepublishOnly": "nr build",
     "release": "bumpp && npm publish",
-    "start": "esno src/index.ts",
+    "start": "esno src/cli.ts",
     "test": "vitest",
     "typecheck": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
+  "dependencies": {
+    "@antfu/utils": "^0.7.6",
+    "axios": "^1.6.0",
+    "execa": "^8.0.1",
+    "picocolors": "^1.0.0",
+    "pinyin-pro": "^3.17.0",
+    "unconfig": "^0.3.11",
+    "yargs": "^17.7.2"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^1.0.0-beta.22",
     "@antfu/ni": "^0.21.8",
-    "@antfu/utils": "^0.7.6",
     "@types/node": "^20.8.3",
+    "@types/yargs": "^17.0.29",
     "bumpp": "^9.2.0",
     "eslint": "^8.51.0",
     "esno": "^0.17.0",
