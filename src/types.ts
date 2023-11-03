@@ -62,6 +62,13 @@ export interface ApiInterface {
   items?: any
 }
 
+export interface Schema {
+  $ref: string
+  originalRef: string
+  type?: string
+  items?: any
+}
+
 export interface ApiParameter {
   in: string
   name: string
@@ -70,12 +77,7 @@ export interface ApiParameter {
   type: string
   format?: string
   items?: any
-  schema?: {
-    $ref: string
-    originalRef: string
-    type?: string
-    items?: any
-  }
+  schema?: Schema
   isSimpleJsType?: boolean
   isArray?: boolean
 }
@@ -90,7 +92,20 @@ export interface SwaggerData {
   host: string
   basePath: string
   tags: any[]
-  paths: any
+  paths: {
+    [path: string]: {
+      [method: string]: {
+        summary: string
+        parameters: ApiParameter[]
+        responses: {
+          [code: string]: {
+            description: string
+            schema: Schema
+          }
+        }
+      }
+    }
+  }
   definitions: {
     [key: string]: ApiInterface
   }
