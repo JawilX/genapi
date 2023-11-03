@@ -5,7 +5,7 @@ import c from 'picocolors'
 import { execa } from 'execa'
 import axios from 'axios'
 import { capitalize } from '@antfu/utils'
-import type { ApiBlock, ApiOptions, ApiParameter, InitOptions, InterfaceProperty, SwaggerData } from './types'
+import type { ApiBlock, ApiInterface, ApiOptions, ApiParameter, InitOptions, SwaggerData } from './types'
 import { handleApiModel } from './handleApiModel'
 import { handleInterface } from './handleInterface'
 import { handleJsType } from './utils'
@@ -123,13 +123,15 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
   })
 }
 
-async function writeInterfaceToFile(apiOptions: ApiOptions, interfaces: InterfaceProperty[]) {
+async function writeInterfaceToFile(apiOptions: ApiOptions, interfaces: ApiInterface[]) {
   const absOutputDir = apiOptions.absOutputDir || ''
   let str = ''
   interfaces.forEach((item) => {
     str += `export interface ${item.name} {`
-    if (item?.properties && item.properties?.length) {
-      item.properties.forEach((it: any) => {
+    const properties = item.properties
+    if (properties) {
+      Object.keys(properties).forEach((key) => {
+        const it = properties[key]
         const description = it.description ? `/** ${it.description} */` : ''
         // 有注释
         if (description) {

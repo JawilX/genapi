@@ -1,7 +1,7 @@
-import type { InterfaceProperty, SwaggerData } from './types'
+import type { ApiInterface, SwaggerData } from './types'
 import { handleJsType, handleWeirdName } from './utils'
 
-export function handleInterface(definitions: SwaggerData['definitions']): InterfaceProperty[] {
+export function handleInterface(definitions: SwaggerData['definitions']): ApiInterface[] {
   /**
    * [{
    *    name:"",   // 原始 key 处理后结果，如： ApiResponse
@@ -15,7 +15,7 @@ export function handleInterface(definitions: SwaggerData['definitions']): Interf
    *    }]
    *  }]
    */
-  const defs: InterfaceProperty[] = []
+  const defs: ApiInterface[] = []
   Object.keys(definitions).forEach((key) => {
     const interfaceName = handleWeirdName(key)
     // 不存在或者是简单类型
@@ -38,27 +38,21 @@ export function handleInterface(definitions: SwaggerData['definitions']): Interf
  *   "groupId": { "type": "integer", "format": "int64", "description": "圈子id" }
  * },
  */
-function handleProperties(properties: Record<string, InterfaceProperty>) {
-  const arr: InterfaceProperty[] = []
+function handleProperties(properties: Record<string, ApiInterface>) {
   Object.keys(properties).forEach((key) => {
     const obj = properties[key]
-    const interfaceModal = handleInterfaceModal(obj)
-    arr.push({ name: key, ...interfaceModal })
+    obj.name = key
+    handleInterfaceModal(obj)
   })
-  return arr
+  return properties
 }
 
-function handleInterfaceModal(property: InterfaceProperty) {
+function handleInterfaceModal(property: ApiInterface) {
   const additionalProperties = property.type === 'object' && property.additionalProperties?.originalRef
-  const isArray = property.type === 'array'
-  const isSimpleJsType = !additionalProperties && !!handleJsType(property.format || property.type)
-
-  return {
-    isArray, // 是否是数组
-    isSimpleJsType, // 是否是简单数据 就是 js 类型
-    type: additionalProperties ? handleWeirdName(additionalProperties) : handleItemsType(property),
-    description: property.description || '',
-  }
+  property.type = additionalProperties ? handleWeirdName(additionalProperties) : handleItemsType(property)
+  property.isArray = property.type === 'array'
+  property.isSimpleJsType = !additionalProperties && !!handleJsType(property.format || property.type)
+  return property
 }
 
 /**
@@ -82,7 +76,7 @@ function handleInterfaceModal(property: InterfaceProperty) {
     "$ref": "#/definitions/AddUserReq", "originalRef": "AddUserReq"
   },
  */
-function handleItemsType(property: InterfaceProperty) {
+function handleItemsType(property: ApiInterface) {
   if (property.type === 'array') {
     if (property?.items?.originalRef) {
       const name = handleWeirdName(property.items.originalRef)

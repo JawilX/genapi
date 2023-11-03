@@ -41,30 +41,25 @@ export interface ApiBlock {
   apis: ApiBodyParams[]
 }
 
-export interface InterfaceProperty {
-  name: string
-  /** 是否是数组 */
-  isArray: boolean
-  /** 是否是简单 js 类型, 如 number、string 等 */
-  isSimpleJsType: boolean
-  /** 类型，如 string, number, boolean , UserInterface */
+export interface ApiInterface {
+  /** 原始 key 处理后结果，如： ApiResponse */
+  name?: string
+  /** 类型，如 'object', 目前看到的都是 'object' */
   type: string
+  properties?: {
+    [key: string]: ApiInterface
+  }
+  /** 是否是数组 */
+  isArray?: boolean
+  /** 是否是简单 js 类型, 如 number、string 等 */
+  isSimpleJsType?: boolean
   format?: string
   originalRef?: string
   /** 注释 */
-  description: string
+  description?: string
   /** 额外属性 */
   additionalProperties?: any
-  properties?: any
   items?: any
-}
-
-export interface ApiInterface {
-  /** 原始 key 处理后结果，如： ApiResponse */
-  name: string
-  /** 类型，如 'object', 目前看到的都是 'object' */
-  type: string
-  properties: InterfaceProperty[]
 }
 
 export interface ApiParameter {
@@ -96,6 +91,8 @@ export interface SwaggerData {
   basePath: string
   tags: any[]
   paths: any
-  definitions: any
+  definitions: {
+    [key: string]: ApiInterface
+  }
   securityDefinitions: any
 }
