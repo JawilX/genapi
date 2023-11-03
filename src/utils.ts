@@ -75,8 +75,13 @@ export function handleWeirdName(originKey: string) {
   str = str.replace(/\s|-|&|\/|\*|=|\+|\$/g, '') // 去除所有空格，短杠 - ，斜杠 /， 星号 *， 等号 =，加号 +, $符
   str = str.replace(/(,|，|、|；|;|\.|。|"|'|‘|’|“|”)/g, '') // 去除中英文逗号，顿号，分号，中英文句号，中引文单双引号
   // 汉字转拼音 历史消息=>LiShiXiaoXi
-  str = pinyin(str, { nonZh: 'consecutive', toneType: 'none', v: true, type: 'array' }).map(upperCaseFirstLetter).join('')
+  if (hasChinese(str))
+    str = pinyin(str, { nonZh: 'consecutive', toneType: 'none', v: true, type: 'array' }).map(upperCaseFirstLetter).join('')
   return str
+}
+
+export function hasChinese(str: string) {
+  return /[\u4E00-\u9FA5]+/g.test(str)
 }
 
 export function handleJsType(originType: string) {
@@ -113,4 +118,9 @@ export function handleJsType(originType: string) {
 /** 首字母大写 */
 export function upperCaseFirstLetter(str: string) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
+/** 首字母小写 */
+export function lowerCaseFirstLetter(str: string) {
+  return str.slice(0, 1).toLowerCase() + str.slice(1)
 }

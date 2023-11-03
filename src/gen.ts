@@ -75,7 +75,7 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
         fileUsedInterface.push(outputInterface)
 
       // 入参需要引入的interface
-      ;(parameters || []).forEach(item => !item.isSimpleJsType && item.type && fileUsedInterface.push(item.type))
+      parameters?.forEach(item => !item.isSimpleJsType && item.type && fileUsedInterface.push(item.type))
 
       const { p1, p2, p3 } = getParamStr(parameters)
       const apiBodyFn = initOptions.apiBody
@@ -207,7 +207,7 @@ function getParamStr(parameters?: ApiParameter[]) {
     const str = avaliableParam.reduce((pre, cur) => {
       let desc = cur.description?.trim()
       desc = desc && desc !== cur.name.trim() ? `\n// ${desc}\n` : '' // 有注释且和名字不一样
-      return `${pre}${desc}${cur.name}?:${cur.type}${cur.isArray ? '[]' : ''},`
+      return `${pre}${desc}${cur.name}?: ${cur.type}${cur.isArray ? '[]' : ''},`
     }, '')
     p1 = `data: {${str}}`
     p2 = 'data'
@@ -222,7 +222,7 @@ function getParamStr(parameters?: ApiParameter[]) {
     const str = avaliableParam.reduce((pre, cur) => {
       let desc = cur.description?.trim()
       desc = desc && desc !== cur.name.trim() ? `\n// ${desc}\n` : '' // 有注释且和名字不一样
-      return `${pre}${desc}${cur.name}?:${cur.type}${cur.isArray ? '[]' : ''},`
+      return `${pre}${desc}${cur.name}?: ${cur.type}${cur.isArray ? '[]' : ''},`
     }, '')
     p1 = `data: {${str}}`
     p2 = ` {${notInPathParam.map(p => p.name).join(',')}} `
