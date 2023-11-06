@@ -195,7 +195,7 @@ function getParamStr(parameters?: ApiParameter[]) {
   else if (avaliableParam.every(p => p.in === 'path')) {
     const str = avaliableParam.reduce((pre, cur) => {
       let desc = cur.description?.trim()
-      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '' // 有注释且和名字不一样
+      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '\n' // 有注释且和名字不一样
       return `${pre}${desc}${cur.name}?:${cur.type}${cur.isArray ? '[]' : ''};`
     }, '')
     p1 = `data: {${str}}`
@@ -206,7 +206,7 @@ function getParamStr(parameters?: ApiParameter[]) {
   else if (avaliableParam.every(p => p.in === 'query' || p.in === 'body')) {
     const str = avaliableParam.reduce((pre, cur) => {
       let desc = cur.description?.trim()
-      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '' // 有注释且和名字不一样
+      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '\n' // 有注释且和名字不一样
       return `${pre}${desc}${cur.name}?: ${cur.type}${cur.isArray ? '[]' : ''};`
     }, '')
     p1 = `data: {${str}}`
@@ -221,7 +221,7 @@ function getParamStr(parameters?: ApiParameter[]) {
     const notInPathParam = avaliableParam.filter(p => p.in !== 'path')
     const str = avaliableParam.reduce((pre, cur) => {
       let desc = cur.description?.trim()
-      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '' // 有注释且和名字不一样
+      desc = desc && desc !== cur.name.trim() ? `\n  // ${desc}\n` : '\n' // 有注释且和名字不一样
       return `${pre}${desc}${cur.name}?: ${cur.type}${cur.isArray ? '[]' : ''};`
     }, '')
     p1 = `data: {${str}}`
