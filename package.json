@@ -1,7 +1,7 @@
 {
   "name": "@jawilx/gen-api",
   "type": "module",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "packageManager": "pnpm@8.8.0",
   "description": "A modern cli tool that auto generate typescript api code from swagger 2",
   "author": "JawilX <xjh53047@gmail.com>",
