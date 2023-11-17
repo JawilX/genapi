@@ -26,11 +26,11 @@ const jsKeyWords = [
 
 /**
  * 处理接口地址
- * "/abc/def/{taskId}"   => `/abc/def/${taskId}`
- * "/api/abc-defg/v1/{type}/list/filter"  => `/api/abc-defg/v1/${type}/list/filter`
+ * "/abc/def/{taskId}"   => `/abc/def/${data.taskId}`
+ * "/api/abc-defg/v1/{type}/list/filter"  => `/api/abc-defg/v1/${data.type}/list/filter`
  */
 export function commonUrl(url: string): string {
-  return url.replace(/{/g, '${')
+  return url.replace(/{/g, '${data.')
 }
 
 /**

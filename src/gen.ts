@@ -27,6 +27,10 @@ export async function gen(config: InitOptions) {
     const swaggerUrl = item.swaggerUrl
     const absOutputDir = path.join(CWD, item.outputDir || '/src/api')
     const apiOptions = { ...item, absOutputDir }
+
+    if (!swaggerUrl)
+      return console.log(c.red('配置文件里的 swaggerUrl 不能为空'))
+
     if (swaggerUrl.startsWith('http')) {
       try {
         const { data } = await axios.get(swaggerUrl)
@@ -199,7 +203,7 @@ function getParamStr(parameters?: ApiParameter[]) {
       return `${pre}${desc}${cur.name}?:${cur.type}${cur.isArray ? '[]' : ''};`
     }, '')
     p1 = `data: {${str}\n}`
-    p2 = ''
+    p2 = 'data'
     p3 = `const {${avaliableParam.map(p => p.name).join(',')}} = data`
   }
   // 所有的参数都 in query 或 in body

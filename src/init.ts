@@ -25,10 +25,10 @@ async function writeConfigFile(filePath = configFilePath) {
         httpTpl: 'import type { UseFetchOptions } from \\'@vueuse/core\\'',
         apiBody: ({ url, method, summary, name, outputInterface, pstr1, pstr2 }) => {
           return \`
-          /** \${summary || '无注释'} */
-          export function \${name}(\${pstr1}, useFetchOptions?: UseFetchOptions) {
-            return use\${method}<\${outputInterface}>('\${url}', \${pstr2}, useFetchOptions)
-          }\`
+            /** \${summary || '无注释'} */
+            export function \${name}(\${pstr1}, useFetchOptions?: UseFetchOptions) {
+              return use\${method}<\${outputInterface}>(\\\`\${url}\\\`, \${pstr2}, useFetchOptions)
+            }\`
         },
       })
     `)
