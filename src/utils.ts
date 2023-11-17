@@ -87,6 +87,7 @@ export function hasChinese(str: string) {
 export function handleJsType(originType: string) {
   const typeEnum = {
     'integer': 'number',
+    'float': 'number',
     'string': 'string',
     'long': 'string',
     'boolean': 'boolean',
