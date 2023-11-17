@@ -52,6 +52,7 @@ function handleInterfaceModal(property: ApiInterface) {
   property.type = additionalProperties ? handleWeirdName(additionalProperties) : handleItemsType(property)
   property.isArray = property.type === 'array'
   property.isSimpleJsType = !additionalProperties && !!handleJsType(property.format || property.type)
+  property.description = property.description?.replace(/\t/g, '  ')
   return property
 }
 
