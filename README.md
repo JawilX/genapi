@@ -45,7 +45,7 @@
 [npm-downloads-href]: https://npmjs.com/package/@jawilx/gen-api
 [bundle-src]: https://img.shields.io/bundlephobia/minzip/@jawilx/gen-api?style=flat&colorA=080f12&colorB=1fa669&label=minzip
 [bundle-href]: https://bundlephobia.com/result?p=@jawilx/gen-api
-[license-src]: https://img.shields.io/github/license/antfu/@jawilx/gen-api.svg?style=flat&colorA=080f12&colorB=1fa669
+[license-src]: https://img.shields.io/github/license/jawilx/gen-api.svg?style=flat&colorA=080f12&colorB=1fa669
 [license-href]: https://github.com/jawilx/gen-api/blob/main/LICENSE
 [jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
 [jsdocs-href]: https://www.jsdocs.io/package/@jawilx/gen-api
