@@ -27,7 +27,7 @@
 2. init api.config.ts
 <pre align="center">pnpm genapi:init</pre>
 
-3. set api.config.ts apiList swaggerUrl
+3. set api.config.ts apiList swaggerUrl ([How to get swaggerUrl](https://apifox.com/help/api-docs/importing-api/swagger#url-%E5%AF%BC%E5%85%A5))
 
 4. generate
 <pre align="center">pnpm genapi</pre>
