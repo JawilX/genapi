@@ -1,7 +1,7 @@
 import type { ApiInterface, SwaggerData } from './types'
 import { handleJsType, handleWeirdName } from './utils'
 
-export function handleInterface(definitions: SwaggerData['definitions']): ApiInterface[] {
+export function handleInterface(schemas: SwaggerData['components']['schemas']): ApiInterface[] {
   /**
    * [{
    *    name:"",   // 原始 key 处理后结果，如： ApiResponse
@@ -16,13 +16,13 @@ export function handleInterface(definitions: SwaggerData['definitions']): ApiInt
    *  }]
    */
   const defs: ApiInterface[] = []
-  Object.keys(definitions).forEach((key) => {
+  Object.keys(schemas).forEach((key) => {
     const interfaceName = handleWeirdName(key)
     // 不存在或者是简单类型
     if (!interfaceName || handleJsType(interfaceName))
       return []
 
-    const obj = definitions[key]
+    const obj = schemas[key]
     const properties = handleProperties(obj.properties || {})
     const interfaceModal = handleInterfaceModal(obj)
     defs.push({ name: interfaceName, ...interfaceModal, properties })
@@ -79,14 +79,14 @@ function handleInterfaceModal(property: ApiInterface) {
  */
 function handleItemsType(property: ApiInterface) {
   if (property.type === 'array') {
-    if (property?.items?.originalRef) {
-      const name = handleWeirdName(property.items.originalRef)
+    if (property?.items?.$ref) {
+      const name = handleWeirdName(property.items.$ref.replace('#/components/schemas/', ''))
       return name.startsWith('Error') ? 'any' : name
     }
     else { return handleJsType(property.items?.format || property.items?.type) }
   }
-  else if (property?.originalRef) {
-    const name = handleWeirdName(property.originalRef)
+  else if (property?.$ref) {
+    const name = handleWeirdName(property.$ref.replace('#/components/schemas/', ''))
     return name.startsWith('Error') ? 'any' : name
   }
   else {

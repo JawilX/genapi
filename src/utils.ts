@@ -1,5 +1,6 @@
 import { capitalize } from '@antfu/utils'
 import { pinyin } from 'pinyin-pro'
+import type { ApiContent } from './types'
 
 const jsKeyWords = [
   'delete',
@@ -46,7 +47,7 @@ export function getApiName(url: string, method: string) {
   url = url.replace(/\$|\{|\}|-|\./g, '')
   let name = url.replace(/\/\w/g, (match, index) => {
     const letter = match.replace('/', '')
-    return index === 0 ? letter : capitalize(letter)
+    return index === 0 ? letter.toLowerCase() : capitalize(letter)
   })
   // 路径相同的 api, 在后面拼上请求方法以做区分， 如，有两个接口处理后的接口名称都是 systemUser，则分别处理成： systemUserGet 和  systemUserPost
   if (method)
@@ -61,7 +62,18 @@ export function getApiName(url: string, method: string) {
  */
 export function getNamespace(url: string) {
   const arr = url.split('/')
-  return arr.find(item => item && item !== 'api') || ''
+  return lowerCaseFirstLetter(arr.find(item => item && item !== 'api') || '')
+}
+
+/**
+ * 获取 requestBody 或 responses 里的 $ref 的实际接口对象
+ */
+export function getContentOriginRef(content: ApiContent) {
+  if (!content)
+    return ''
+
+  const keys = Object.keys(content)
+  return handleWeirdName(content[keys[0]].schema.$ref?.replace('#/components/schemas/', ''))
 }
 
 /**
@@ -105,13 +117,15 @@ export function handleJsType(originType: string) {
     'date-time': 'string',
     'Date': 'string',
     'date': 'string',
-    'file': 'File',
+    'file': 'Blob',
+    'binary': 'Blob',
     // "properties": {
     //   "uri": { "type": "string", "format": "uri" },
     //   "url": { "type": "string", "format": "url" },
     // },
     'uri': 'string',
     'url': 'string',
+    'uuid': 'string',
   } as any
   return typeEnum[originType] || ''
 }

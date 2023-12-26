@@ -1,6 +1,6 @@
 import c from 'picocolors'
 import type { ApiBlock, ApiBodyParams, ApiOptions, ApiParameter, SwaggerData } from './types'
-import { commonUrl, getApiName, getNamespace, handleJsType, handleWeirdName } from './utils'
+import { commonUrl, getApiName, getContentOriginRef, getNamespace, handleJsType, handleWeirdName } from './utils'
 
 export function handleApiModel(apiOptions: ApiOptions, paths: SwaggerData['paths']): ApiBlock[] {
   const apiList: ApiBlock[] = []
@@ -16,12 +16,16 @@ export function handleApiModel(apiOptions: ApiOptions, paths: SwaggerData['paths
         const namespace = getNamespace(url)
         const summary = item.summary // 接口注释
         const parameters = getParameters(item.parameters) // 入参
-        const resScheme = item?.responses['200']?.schema // 出参模型
+        const requestBodyRef = getContentOriginRef(item.requestBody?.content)
+
+        const resContent = item?.responses['200']?.content
+        // 出参模型
+        const resScheme = resContent?.['application/json']?.schema || resContent?.['*/*']?.schema
 
         let outputInterface = '' // 出参interface
         // 如果存在出参模型
-        if (resScheme?.originalRef)
-          outputInterface = handleWeirdName(resScheme.originalRef)
+        if (resScheme?.$ref)
+          outputInterface = handleWeirdName(resScheme.$ref.replace('#/components/schemas/', ''))
         // 出参是个简单类型
         else if (resScheme?.type)
           outputInterface = handleJsType(resScheme.type)
@@ -36,6 +40,7 @@ export function handleApiModel(apiOptions: ApiOptions, paths: SwaggerData['paths
           method,
           summary,
           parameters,
+          requestBodyRef,
           outputInterface,
         }
         const idx = apiList.findIndex(item => item.namespace === namespace)

@@ -6,7 +6,7 @@
 [![JSDocs][jsdocs-src]][jsdocs-href]
 [![License][license-src]][license-href]
 
-<p align="center">A modern cli tool that auto generate typescript api code from swagger 2</p>
+<p align="center">A modern cli tool that auto generate typescript api code from swagger 2 and openapi 3</p>
 
 <pre align="center">pnpm i -D @jawilx/gen-api</pre>
 

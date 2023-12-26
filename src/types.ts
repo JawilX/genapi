@@ -1,6 +1,8 @@
 export interface ApiOptions {
   /** swagger json 的 url 或 本地swagger.json相对根目录的路径 */
   swaggerUrl: string
+  /** swagger version，可以手动指定版本，不指定则自动识别 */
+  swaggerVersion?: 2 | 3
   /** 输出到哪个目录中 */
   outputDir?: string
   absOutputDir?: string
@@ -21,6 +23,8 @@ export interface ApiBodyParams {
   name: string
   /** 接口入参，格式： [{in:"body",type:"IUserModel",interface:"IUserModel",name:"",description:"注释"},{in:"query",type:string,interface:""}] */
   parameters?: ApiParameter[]
+  /** 请求参数的接口 */
+  requestBodyRef?: string
   /** 出参interface */
   outputInterface?: string
   /** 由 parameters 处理得到的 */
@@ -60,6 +64,7 @@ export interface ApiInterface {
   /** 额外属性 */
   additionalProperties?: any
   items?: any
+  $ref?: string
 }
 
 export interface Schema {
@@ -82,8 +87,19 @@ export interface ApiParameter {
   isArray?: boolean
 }
 
+export interface ApiContent {
+  [contentType: string]: {
+    schema: Schema
+  }
+}
+
+export interface ApiRequestBody {
+  description: string
+  content: ApiContent
+}
+
 export interface SwaggerData {
-  swagger: string
+  openapi: string
   info: {
     title: string
     version: string
@@ -97,17 +113,20 @@ export interface SwaggerData {
       [method: string]: {
         summary: string
         parameters: ApiParameter[]
+        requestBody: ApiRequestBody
         responses: {
           [code: string]: {
             description: string
-            schema: Schema
+            content: ApiContent
           }
         }
       }
     }
   }
-  definitions: {
-    [key: string]: ApiInterface
+  components: {
+    schemas: {
+      [key: string]: ApiInterface
+    }
   }
   securityDefinitions: any
 }

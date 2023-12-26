@@ -31,37 +31,59 @@ export async function gen(config: InitOptions) {
     if (!swaggerUrl)
       return console.log(c.red('配置文件里的 swaggerUrl 不能为空'))
 
-    if (swaggerUrl.startsWith('http')) {
-      try {
-        const { data } = await axios.get(swaggerUrl)
-        parseData(apiOptions, data)
+    let data
+    try {
+      if (swaggerUrl.startsWith('http')) {
+        const res = await axios.get(swaggerUrl)
+        data = res.data
       }
-      catch (error: any) {
-        console.error(c.red('swagger地址访问异常'), error?.message)
-      }
-    }
-    else {
-      const filePath = path.join(CWD, swaggerUrl)
-      try {
-        const data = await fs.readFile(filePath, 'utf-8')
-        parseData(apiOptions, JSON.parse(data))
-      }
-      catch (error: any) {
-        console.error(c.red('swagger地址访问异常'), error?.message)
+      else {
+        const filePath = path.join(CWD, swaggerUrl)
+        data = JSON.parse(await fs.readFile(filePath, 'utf-8'))
       }
     }
+    catch (error: any) {
+      console.error(c.red('swagger地址访问异常'), error?.message)
+    }
+
+    const normalized = await normalizeData(data, item.swaggerVersion)
+    parseData(apiOptions, normalized)
   })
 }
 
+async function normalizeData(data: any, swaggerVersion?: 2 | 3) {
+  if (!data)
+    return {}
+
+  const version = swaggerVersion || (data.swagger?.startsWith('2') ? 2 : 3)
+
+  try {
+    if (version === 2) {
+      const res = await axios.post('https://converter.swagger.io/api/convert', data)
+      data = res.data
+    }
+  }
+  catch (error: any) {
+    console.error(c.red('convert swagger 2 to openapi 3 异常'), error?.message)
+  }
+
+  return data
+}
+
 function parseData(apiOptions: ApiOptions, data: SwaggerData) {
-  const apiList = handleApiModel(apiOptions, data.paths)
-  const interfaces = handleInterface(data.definitions)
-  const count = apiList.reduce((pre, cur) => {
-    return pre + cur.apis.length
-  }, 0)
-  console.log(c.green(`总共 ${count} 个接口生成中...`))
-  writeApiToFile(apiOptions, apiList)
-  writeInterfaceToFile(apiOptions, interfaces)
+  try {
+    const apiList = handleApiModel(apiOptions, data.paths)
+    const interfaces = handleInterface(data.components?.schemas)
+    const count = apiList.reduce((pre, cur) => {
+      return pre + cur.apis.length
+    }, 0)
+    console.log(c.green(`总共 ${count} 个接口生成中...`))
+    writeApiToFile(apiOptions, apiList)
+    writeInterfaceToFile(apiOptions, interfaces)
+  }
+  catch (error: any) {
+    console.error(c.red('数据解析异常'), error?.message)
+  }
 }
 
 async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
@@ -73,7 +95,7 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
     const namespace = item.namespace
     let fileUsedInterface: string[] = [] // 当前文件用到的 interface
     item.apis.forEach((api) => {
-      const { name, url, method, summary, parameters, outputInterface } = api
+      const { name, url, method, summary, parameters, requestBodyRef, outputInterface } = api
       // 出参存在且不是简单类型
       if (outputInterface && !handleJsType(outputInterface))
         fileUsedInterface.push(outputInterface)
@@ -81,7 +103,13 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
       // 入参需要引入的interface
       parameters?.forEach(item => !item.isSimpleJsType && item.type && fileUsedInterface.push(item.type))
 
-      const { p1, p2, p3 } = getParamStr(parameters)
+      let { p1, p2, p3 } = getParamStr(parameters)
+      if (requestBodyRef) {
+        fileUsedInterface.push(requestBodyRef)
+        p1 = `data: ${requestBodyRef}`
+        p2 = 'data'
+      }
+
       const apiBodyFn = initOptions.apiBody
       const apiBodyStr = apiBodyFn({
         name,
