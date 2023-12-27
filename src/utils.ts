@@ -36,9 +36,6 @@ export function commonUrl(url: string): string {
 
 /**
  * 将接口地址转化为接口名称
- * @param url
- * @param method
- * @returns
  */
 export function getApiName(url: string, method: string) {
   // 去除开头的 /api

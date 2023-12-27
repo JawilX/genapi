@@ -36,7 +36,6 @@
 
 [MIT](./LICENSE) License © 2023-PRESENT [JawilX](https://github.com/JawilX)
 
-
 <!-- Badges -->
 
 [npm-version-src]: https://img.shields.io/npm/v/@jawilx/gen-api?style=flat&colorA=080f12&colorB=1fa669
