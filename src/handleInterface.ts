@@ -39,21 +39,25 @@ export function handleInterface(schemas: SwaggerData['components']['schemas']): 
  * },
  */
 function handleProperties(properties: Record<string, ApiInterface>) {
+  const arr: ApiInterface[] = []
   Object.keys(properties).forEach((key) => {
     const obj = properties[key]
-    obj.name = key
-    handleInterfaceModal(obj)
+    const interfaceModal = handleInterfaceModal(obj)
+    arr.push({ name: key, ...interfaceModal })
   })
-  return properties
+  return arr
 }
 
 function handleInterfaceModal(property: ApiInterface) {
   const additionalProperties = property.type === 'object' && property.additionalProperties?.originalRef
-  property.type = additionalProperties ? handleWeirdName(additionalProperties) : handleItemsType(property)
-  property.isArray = property.type === 'array'
-  property.isSimpleJsType = !additionalProperties && !!handleJsType(property.format || property.type)
-  property.description = property.description?.replace(/\t/g, '  ')
-  return property
+  const isArray = property.type === 'array'
+  const isSimpleJsType = !additionalProperties && !!handleJsType(property.format || property.type)
+  return {
+    isArray,
+    isSimpleJsType,
+    type: additionalProperties ? handleWeirdName(additionalProperties) : handleItemsType(property),
+    description: property.description?.replace(/\t/g, '  ') || '',
+  }
 }
 
 /**

@@ -159,23 +159,14 @@ async function writeInterfaceToFile(apiOptions: ApiOptions, interfaces: ApiInter
   const absOutputDir = apiOptions.absOutputDir || ''
   let str = ''
   interfaces.forEach((item) => {
-    str += `export interface ${item.name} {`
+    str += `export interface ${item.name} {\n\n`
     const properties = item.properties
     if (properties) {
       Object.keys(properties).forEach((key) => {
         const it = properties[key]
-        const description = it.description ? `/** ${it.description} */` : ''
-        // 有注释
-        if (description) {
-          str += `
-            ${description || ''}
-            ${it.name}?: ${it.type}${it.isArray ? '[]' : ''}`
-        }
-        // 没注释
-        else {
-          str += `
-            ${it.name}?: ${it.type}${it.isArray ? '[]' : ''}`
-        }
+        // 注释
+        str += it.description ? `/** ${it.description} */\n` : ''
+        str += `${it.name}?: ${it.type}${it.isArray ? '[]' : ''}\n`
       })
     }
     str += '\n}\n\n'
