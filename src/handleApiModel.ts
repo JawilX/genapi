@@ -152,7 +152,7 @@ function getParameters(parameters: ApiParameter[]): ApiParameter[] {
           isSimpleJsType = false
         }
         else {
-          type = handleJsType(item.format || item.type) || 'any'
+          type = handleJsType(item.format || item.type || item.schema?.format || item.schema?.type || '') || 'any'
           isSimpleJsType = true
         }
       }

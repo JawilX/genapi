@@ -71,6 +71,7 @@ export interface Schema {
   $ref: string
   originalRef: string
   type?: string
+  format?: string
   items?: any
 }
 
