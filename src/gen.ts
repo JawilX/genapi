@@ -59,7 +59,7 @@ async function normalizeData(data: any, swaggerVersion?: 2 | 3) {
 
   try {
     if (version === 2) {
-      const res = await axios.post('https://converter.swagger.io/api/convert', data)
+      const res = await axios.post(initOptions.swaggerConvertApi ?? 'https://converter.swagger.io/api/convert', data)
       data = res.data
     }
   }
