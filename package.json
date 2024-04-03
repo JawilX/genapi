@@ -66,6 +66,7 @@
     "execa": "^8.0.1",
     "picocolors": "^1.0.0",
     "pinyin-pro": "^3.18.6",
+    "swagger2openapi": "^7.0.8",
     "unconfig": "^0.3.11",
     "yargs": "^17.7.2"
   },
@@ -73,6 +74,7 @@
     "@antfu/eslint-config": "^2.6.1",
     "@antfu/ni": "^0.21.12",
     "@types/node": "^20.10.7",
+    "@types/swagger2openapi": "^7.0.4",
     "@types/yargs": "^17.0.32",
     "bumpp": "^9.2.1",
     "eslint": "^8.56.0",

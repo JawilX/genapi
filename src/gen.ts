@@ -5,6 +5,7 @@ import c from 'picocolors'
 import { execa } from 'execa'
 import axios from 'axios'
 import { capitalize } from '@antfu/utils'
+import converter from 'swagger2openapi'
 import type { ApiBlock, ApiInterface, ApiOptions, ApiParameter, InitOptions, SwaggerData } from './types'
 import { handleApiModel } from './handleApiModel'
 import { handleInterface } from './handleInterface'
@@ -59,8 +60,20 @@ async function normalizeData(data: any, swaggerVersion?: 2 | 3) {
 
   try {
     if (version === 2) {
-      const res = await axios.post(initOptions.swaggerConvertApi ?? 'https://converter.swagger.io/api/convert', data)
-      data = res.data
+      if (initOptions.useLocalConvert) {
+        const res: any = await new Promise((resolve, reject) => {
+          converter.convertObj(data, { patch: true }, (err: any, result: any) => {
+            if (err)
+              reject(err)
+            else resolve(result)
+          })
+        })
+        data = res.openapi
+      }
+      else {
+        const res = await axios.post(initOptions.swaggerConvertApi ?? 'https://converter.swagger.io/api/convert', data)
+        data = res.data
+      }
     }
   }
   catch (error: any) {

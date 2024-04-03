@@ -36,6 +36,8 @@ export interface ApiBodyParams {
 export interface InitOptions {
   /** 手动配置转换 swagger2 到 openapi3 的接口地址 */
   swaggerConvertApi?: string
+  /** 是否使用本地转换 swagger2 到 openapi3, 线上接口不可用时可开启这个 */
+  useLocalConvert?: boolean
   apiList: ApiOptions[]
   /** 文件头部引入内容 */
   httpTpl?: string
