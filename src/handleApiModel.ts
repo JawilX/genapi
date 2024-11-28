@@ -17,6 +17,17 @@ export function handleApiModel(apiOptions: ApiOptions, paths: SwaggerData['paths
         const summary = item.summary // 接口注释
         const parameters = getParameters(item.parameters) // 入参
         const requestBodyRef = getContentOriginRef(item.requestBody?.content)
+        const requestFormData = item.requestBody?.content?.['multipart/form-data']
+        const formDataProperties = requestFormData?.schema?.properties
+        let formDataParameters
+        if (formDataProperties) {
+          const list = []
+          for (const key in formDataProperties) {
+            const item = formDataProperties[key]
+            list.push({ ...item, name: key } as any)
+          }
+          formDataParameters = getParameters(list)
+        }
 
         const resContent = item?.responses['200']?.content
         // 出参模型
@@ -41,6 +52,8 @@ export function handleApiModel(apiOptions: ApiOptions, paths: SwaggerData['paths
           summary,
           parameters,
           requestBodyRef,
+          requestFormData,
+          formDataParameters,
           outputInterface,
         }
         const idx = apiList.findIndex(item => item.namespace === namespace)

@@ -25,6 +25,11 @@ export interface ApiBodyParams {
   parameters?: ApiParameter[]
   /** 请求参数的接口 */
   requestBodyRef?: string
+  /** 请求类型是 multipart/form-data 时 requestBody 里面对应的数据 */
+  requestFormData?: { schema?: Schema }
+  formDataParameters?: ApiParameter[]
+  /** 请求类型是 multipart/form-data 时 formDataStr 为 'FormData' */
+  formDataStr?: 'FormData' | ''
   /** 出参interface */
   outputInterface?: string
   /** 由 parameters 处理得到的 */
@@ -77,6 +82,12 @@ export interface Schema {
   type?: string
   format?: string
   items?: any
+  properties?: {
+    [key: string]: {
+      type?: string
+      format?: string
+    }
+  }
 }
 
 export interface ApiParameter {

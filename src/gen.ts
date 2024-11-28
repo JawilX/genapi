@@ -24,7 +24,7 @@ export async function gen(config: InitOptions) {
   if (!config.apiBody)
     return console.log(c.red('配置文件里的 apiBody不能为空, 且必须是一个函数'))
 
-  apiList.forEach(async (item) => {
+  for (const item of apiList) {
     const swaggerUrl = item.swaggerUrl
     const absOutputDir = path.join(CWD, item.outputDir || '/src/api')
     const apiOptions = { ...item, absOutputDir }
@@ -49,7 +49,7 @@ export async function gen(config: InitOptions) {
 
     const normalized = await normalizeData(data, item.swaggerVersion)
     parseData(apiOptions, normalized)
-  })
+  }
 }
 
 async function normalizeData(data: any, swaggerVersion?: 2 | 3) {
@@ -102,13 +102,13 @@ function parseData(apiOptions: ApiOptions, data: SwaggerData) {
 async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
   const outputDir = apiOptions.absOutputDir || './'
   // return
-  apiList.forEach(async (item) => {
+  for (const item of apiList) {
     const tplStr = `${initOptions.httpTpl || ''}`
     let apiStr = ''
     const namespace = item.namespace
     let fileUsedInterface: string[] = [] // 当前文件用到的 interface
     item.apis.forEach((api) => {
-      const { name, url, method, summary, parameters, requestBodyRef, outputInterface } = api
+      const { name, url, method, summary, parameters, requestBodyRef, requestFormData, formDataParameters, outputInterface } = api
       // 出参存在且不是简单类型
       if (outputInterface && !handleJsType(outputInterface))
         fileUsedInterface.push(outputInterface)
@@ -122,6 +122,17 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
         p1 = `data: ${requestBodyRef}`
         p2 = 'data'
       }
+      if (requestFormData) {
+        const { schema } = requestFormData
+        if (schema?.type === 'object' && formDataParameters) {
+          p1 = `data: {${formDataParameters.map(item => `${item.name}: ${item.type}${item.isArray ? '[]' : ''}`).join(', ')}}`
+          p2 = 'data'
+        }
+        else {
+          p1 = `data: ${handleJsType(schema?.format || schema?.type || 'binary')}`
+          p2 = 'data'
+        }
+      }
 
       const apiBodyFn = initOptions.apiBody
       const apiBodyStr = apiBodyFn({
@@ -130,6 +141,8 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
         method: capitalize(method),
         summary,
         parameters,
+        requestFormData,
+        formDataStr: requestFormData ? 'FormData' : '',
         outputInterface: outputInterface || 'any', // 出参不存在，处理成any
         pstr1: p1,
         pstr2: p2,
@@ -165,7 +178,7 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
 
     // 格式化
     await execa('eslint', ['--fix', targetFile], { stdio: 'inherit' })
-  })
+  }
 }
 
 async function writeInterfaceToFile(apiOptions: ApiOptions, interfaces: ApiInterface[]) {
