@@ -125,7 +125,7 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
       if (requestFormData) {
         const { schema } = requestFormData
         if (schema?.type === 'object' && formDataParameters) {
-          p1 = `data: {${formDataParameters.map(item => `${item.name}: ${item.type}${item.isArray ? '[]' : ''}`).join(', ')}}`
+          p1 = `data: {${formDataParameters.map(item => `${item.name}?: ${item.type}${item.isArray ? '[]' : ''}`).join(', ')}}`
           p2 = 'data'
         }
         else {
