@@ -142,6 +142,7 @@ async function writeApiToFile(apiOptions: ApiOptions, apiList: ApiBlock[]) {
         summary,
         parameters,
         requestFormData,
+        formDataParameters,
         formDataStr: requestFormData ? 'FormData' : '',
         outputInterface: outputInterface || 'any', // 出参不存在，处理成any
         pstr1: p1,
